@@ -134,6 +134,19 @@ export default function ProfilePage() {
               <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-4 border-slate-900 bg-slate-800 shadow-xl">
                 <User size={42} className="text-blue-400" />
               </div>
+              <div>
+                {user.isVerified ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-600/20 px-3 py-1 text-xs font-medium text-green-400">
+                    <Shield size={14} />
+                    Verified Account
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-red-600/20 px-3 py-1 text-xs font-medium text-red-400">
+                    <Shield size={14} />
+                    Unverified Account
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* User Name */}
