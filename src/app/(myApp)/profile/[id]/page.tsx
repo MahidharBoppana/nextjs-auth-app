@@ -1,5 +1,7 @@
 import React, { Suspense, use } from "react";
 
+export const instant = false;
+
 type Props = {
   params: Promise<{ id: string }>;
 };
