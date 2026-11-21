@@ -40,6 +40,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!existingUser.isVerified) {
+      return NextResponse.json(
+        {
+          message: "Your not a verified user please verify your email",
+        },
+        { status: 401 },
+      );
+    }
+
     const tokenData = {
       id: existingUser._id,
       email: existingUser.email,

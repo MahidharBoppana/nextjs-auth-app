@@ -4,36 +4,45 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
-function LoginPage() {
+function SignUpPage() {
   const router = useRouter();
+
   const [user, setUser] = useState({
     email: "",
     password: "",
+    username: "",
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onLogin = async () => {
+  const onSignup = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/login", user);
-      toast.success("User logged in successfully");
+      const response = await axios.post("/api/users/signup", user);
+      toast.success("User created successfully");
+
       setUser({
         email: "",
         password: "",
+        username: "",
       });
-      router.push("/profile");
+
+      router.push("/login");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user.email.length > 0 && user.password.length > 0) {
+    if (
+      user.email.length > 0 &&
+      user.password.length > 0 &&
+      user.username.length > 0
+    ) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
@@ -55,12 +64,32 @@ function LoginPage() {
         {/* Heading */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white">
-            Welcome Back
+            Create Account
           </h1>
 
           <p className="mt-2 text-sm text-slate-400">
-            Login to access your account
+            Sign up to get started with your account
           </p>
+        </div>
+
+        {/* Username */}
+        <div className="mb-5">
+          <label
+            htmlFor="username"
+            className="mb-2 block text-sm font-medium text-slate-300"
+          >
+            Username
+          </label>
+
+          <input
+            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            type="text"
+            name="username"
+            id="username"
+            value={user.username}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
+            placeholder="Enter your username"
+          />
         </div>
 
         {/* Email */}
@@ -105,21 +134,21 @@ function LoginPage() {
 
         {/* Signup Button */}
         <button
-          onClick={onLogin}
+          onClick={onSignup}
           className={`w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 active:scale-[0.98] ${buttonDisabled ? "cursor-not-allowed opacity-50" : ""}`}
           disabled={buttonDisabled}
         >
-          Login
+          Create Account
         </button>
 
         {/* Login Link */}
         <p className="mt-6 text-center text-sm text-slate-400">
-          Register new account?{" "}
+          Already have an account?{" "}
           <Link
-            href="/signup"
+            href="/login"
             className="font-semibold text-blue-400 transition hover:text-blue-300 hover:underline"
           >
-            SignUp
+            Login
           </Link>
         </p>
       </div>
@@ -127,4 +156,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignUpPage;

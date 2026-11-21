@@ -4,45 +4,40 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
-function SignUpPage() {
+function LoginPage() {
   const router = useRouter();
-
   const [user, setUser] = useState({
     email: "",
     password: "",
-    username: "",
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onSignup = async () => {
+  const onLogin = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/signup", user);
-      toast.success("User created successfully");
-
+      const response = await axios.post("/api/users/login", user);
+      toast.success("User logged in successfully");
       setUser({
         email: "",
         password: "",
-        username: "",
       });
-
-      router.push("/login");
+      router.push("/profile");
     } catch (error: any) {
-      toast.error(error.message);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (
-      user.email.length > 0 &&
-      user.password.length > 0 &&
-      user.username.length > 0
-    ) {
+    if (user.email.length > 0 && user.password.length > 0) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
@@ -64,32 +59,12 @@ function SignUpPage() {
         {/* Heading */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-white">
-            Create Account
+            Welcome Back
           </h1>
 
           <p className="mt-2 text-sm text-slate-400">
-            Sign up to get started with your account
+            Login to access your account
           </p>
-        </div>
-
-        {/* Username */}
-        <div className="mb-5">
-          <label
-            htmlFor="username"
-            className="mb-2 block text-sm font-medium text-slate-300"
-          >
-            Username
-          </label>
-
-          <input
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            type="text"
-            name="username"
-            id="username"
-            value={user.username}
-            onChange={(e) => setUser({ ...user, username: e.target.value })}
-            placeholder="Enter your username"
-          />
         </div>
 
         {/* Email */}
@@ -134,21 +109,30 @@ function SignUpPage() {
 
         {/* Signup Button */}
         <button
-          onClick={onSignup}
+          onClick={onLogin}
           className={`w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 active:scale-[0.98] ${buttonDisabled ? "cursor-not-allowed opacity-50" : ""}`}
           disabled={buttonDisabled}
         >
-          Create Account
+          Login
         </button>
+
+        <div className="mt-3 text-right">
+          <Link
+            href="/forgot-password"
+            className="text-sm font-medium text-blue-400 transition hover:text-blue-300 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
         {/* Login Link */}
         <p className="mt-6 text-center text-sm text-slate-400">
-          Already have an account?{" "}
+          Register new account?{" "}
           <Link
-            href="/login"
+            href="/signup"
             className="font-semibold text-blue-400 transition hover:text-blue-300 hover:underline"
           >
-            Login
+            SignUp
           </Link>
         </p>
       </div>
@@ -156,4 +140,4 @@ function SignUpPage() {
   );
 }
 
-export default SignUpPage;
+export default LoginPage;
