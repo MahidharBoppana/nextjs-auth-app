@@ -5,7 +5,7 @@ import { sendEmail } from "@/helpers/mailer";
 
 connect();
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   const reqBody = await request.json();
   const { email } = reqBody;
 
